@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Operations Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #eef1f8;
+      --surface: #ffffff;
+      --ink: #101b3b;
+      --muted: #55607c;
+      --line: #cfd6e6;
+      --hero: #0a1f6e;
+      --hero-2: #1542c9;
+      --accent: #1542c9;
+      --danger: #b3261e;
+      --focus: #1542c9;
+    }
+    [data-theme="dark"] {
+      --bg: #070d24;
+      --surface: #111a3a;
+      --ink: #eef1fb;
+      --muted: #a6b0cf;
+      --line: #2a3662;
+      --hero: #060b22;
+      --hero-2: #12287f;
+      --accent: #5f86ff;
+      --danger: #ff8a80;
+      --focus: #9db6ff;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font: 400 16px/1.45 Figtree, "Segoe UI", Roboto, Arial, sans-serif; }
+    h1, h2, h3, p { margin: 0; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .wrap { width: min(1240px, 100%); margin: 0 auto; padding: 0 28px; }
+
+    /* Hero */
+    .hero { padding: 22px 0 112px; color: #ffffff; background: linear-gradient(120deg, var(--hero) 15%, var(--hero-2) 100%); }
+    .hero :focus-visible { outline-color: #ffffff; }
+    .top { display: flex; justify-content: flex-end; gap: 4px; }
+    .ghost { min-height: 40px; padding: 0 12px; color: #ffffff; background: transparent; border: 0; border-radius: 8px; font-weight: 600; }
+    .ghost:hover { background: rgba(255, 255, 255, .14); }
+    .hero-main { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; margin-top: 26px; }
+    .hub-title { min-width: 0; font: 800 clamp(44px, 7.4vw, 92px)/.98 "Bricolage Grotesque", Figtree, sans-serif; letter-spacing: -.025em; overflow-wrap: anywhere; }
+    .clock { flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+    .clock-time { display: block; font: 600 clamp(30px, 3.6vw, 44px)/1 "Bricolage Grotesque", Figtree, sans-serif; }
+    .clock-date { display: block; margin-top: 6px; font-size: 15px; opacity: .85; }
+    .search { display: block; width: 100%; height: 62px; margin-top: 30px; padding: 0 24px; color: #101b3b; background: #ffffff; border: 0; border-radius: 14px; font-size: 19px; }
+    .search::placeholder { color: #55607c; }
+
+    .notice { width: 100%; margin-top: 14px; padding: 11px 16px; color: #2b1d00; background: #ffc83d; border-radius: 10px; font-weight: 600; overflow-wrap: anywhere; }
+
+    /* Tiles */
+    main.wrap { position: relative; margin-top: -76px; padding-bottom: 56px; }
+    .mosaic { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-auto-rows: 214px; gap: 16px; }
+    .tile {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      padding: 20px;
+      overflow: hidden;
+      color: #ffffff;
+      text-decoration: none;
+      background: var(--tile);
+      border-radius: 18px;
+      transition: transform .14s ease;
+    }
+    a.tile:hover { transform: translateY(-4px); }
+    a.tile:focus-visible { outline-offset: 3px; }
+    .tile.featured { grid-column: span 2; }
+    .tile-mark { position: absolute; right: -14px; bottom: -22px; font-size: 128px; line-height: 1; opacity: .1; pointer-events: none; }
+    .tile.featured .tile-mark { right: 8px; font-size: 168px; }
+    .tile-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+    .tile-icon { display: grid; place-items: center; width: 54px; height: 54px; overflow: hidden; background: rgba(255, 255, 255, .2); border-radius: 13px; font-size: 25px; line-height: 1; font-weight: 700; }
+    .tile-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .state { display: flex; align-items: center; gap: 7px; padding: 5px 2px; font-size: 14px; font-weight: 600; }
+    .state::before { content: ""; width: 11px; height: 11px; background: #7dffb5; border-radius: 50%; box-shadow: 0 0 0 3px rgba(255, 255, 255, .25); }
+    .state.maintenance { padding: 5px 11px; color: #2b1d00; background: #ffc83d; border-radius: 999px; }
+    .state.maintenance::before { display: none; }
+    .tile-text { margin-top: auto; }
+    .tile-title { font: 600 23px/1.14 "Bricolage Grotesque", Figtree, sans-serif; overflow-wrap: anywhere; }
+    .tile.featured .tile-title { font-size: 34px; }
+    .tile-desc { display: -webkit-box; margin-top: 5px; overflow: hidden; font-size: 15px; line-height: 1.3; opacity: .92; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .tile.no-link { filter: saturate(.45); }
+
+    .message { grid-column: 1 / -1; padding: 44px 24px; text-align: center; background: var(--surface); border-radius: 18px; }
+    .message h2 { margin-bottom: 6px; font: 600 27px/1.2 "Bricolage Grotesque", sans-serif; }
+    .message p { color: var(--muted); }
+    .message button { margin-top: 16px; }
+
+    /* Buttons and forms */
+    .btn { min-height: 44px; padding: 0 16px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 9px; font-weight: 600; }
+    .btn:hover { border-color: var(--accent); }
+    .btn.primary { color: #ffffff; background: #1542c9; border-color: #1542c9; }
+    .btn.danger { color: var(--danger); }
+    .btn.confirm { color: #ffffff; background: #b3261e; border-color: #b3261e; }
+    .btn.small { min-height: 36px; padding: 0 11px; font-size: 14.5px; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .field { display: block; margin-bottom: 14px; }
+    .field > span { display: block; margin-bottom: 5px; font-size: 15px; font-weight: 600; }
+    .field small { display: block; margin-top: 4px; color: var(--muted); font-size: 13.5px; }
+    .field input, .field select, .field textarea { width: 100%; min-height: 44px; padding: 9px 11px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+    .field textarea { min-height: 70px; resize: vertical; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .check { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 8px; font-weight: 500; }
+    .check input { width: 20px; height: 20px; accent-color: #1542c9; }
+    .error { min-height: 22px; margin-top: 6px; color: var(--danger); font-size: 15px; font-weight: 500; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+    dialog { width: min(420px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; color: var(--ink); background: var(--surface); border: 0; border-radius: 16px; }
+    dialog.wide { width: min(860px, calc(100vw - 24px)); }
+    dialog::backdrop { background: rgba(4, 9, 30, .7); }
+    .dialog-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .dialog-head h2 { font: 600 25px/1.15 "Bricolage Grotesque", sans-serif; }
+    .dialog-body { padding: 20px; }
+    .pin-input { height: 58px; text-align: center; font-size: 26px; letter-spacing: .3em; }
+    .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+    .admin-list { margin: 0 0 16px; padding: 0; list-style: none; }
+    .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .admin-name { min-width: 0; overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .admin-sub { color: var(--muted); font-size: 14px; }
+    .admin-info { min-width: 0; }
+    .admin-btns { display: flex; flex: none; gap: 6px; }
+    .list-title, .form-title { margin-bottom: 10px; font: 600 21px/1.2 "Bricolage Grotesque", sans-serif; }
+    .settings { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+
+    .toast { position: fixed; left: 50%; bottom: 20px; z-index: 20; max-width: calc(100vw - 32px); padding: 11px 16px; color: #ffffff; background: #101b3b; border: 1px solid #5c6a96; border-radius: 10px; transform: translate(-50%, 90px); transition: transform .18s ease; }
+    .toast.show { transform: translate(-50%, 0); }
+
+    @media (max-width: 1020px) {
+      .mosaic { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .wrap { padding-inline: 16px; }
+      .hero { padding: 12px 0 92px; }
+      .hero-main { display: block; margin-top: 14px; }
+      .clock { display: flex; align-items: baseline; gap: 10px; margin-top: 12px; text-align: left; }
+      .clock-date { margin: 0; font-size: 14px; white-space: nowrap; }
+      .search { height: 56px; margin-top: 18px; padding: 0 18px; font-size: 17px; }
+      .mosaic { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 206px; gap: 12px; }
+      .tile { padding: 15px; border-radius: 15px; }
+      .tile-icon { width: 46px; height: 46px; font-size: 21px; }
+      .tile-title { font-size: 18px; }
+      .tile.featured .tile-title { font-size: 27px; }
+      .tile-desc { font-size: 14px; }
+      .state:not(.maintenance) span { display: none; }
+      .admin-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 420px) {
+      .pair { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tile, .toast { transition: none; }
+      a.tile:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="wrap">
+      <div class="top">
+        <button class="ghost" id="themeBtn" type="button">Dark mode</button>
+        <button class="ghost" id="adminBtn" type="button">Admin Edit</button>
+      </div>
+      <div class="hero-main">
+        <h1 class="hub-title" id="hubTitle">Operations Hub</h1>
+        <div class="clock">
+          <time class="clock-time" id="clockTime">--:--:--</time>
+          <span class="clock-date" id="clockDate"></span>
+        </div>
+      </div>
+      <input class="search" id="search" type="search" placeholder="Find a tool" aria-label="Find a tool" autocomplete="off">
+      <div class="notice" id="notice" role="status" hidden></div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="mosaic" id="mosaic" aria-live="polite">
+      <div class="message"><h2>Loading tools</h2><p>Fetching the latest links.</p></div>
+    </div>
+  </main>
+
+  <dialog id="pinDialog" aria-labelledby="pinTitle">
+    <div class="dialog-head">
+      <h2 id="pinTitle">Enter admin PIN</h2>
+      <button class="btn small" id="pinCancel" type="button">Cancel</button>
+    </div>
+    <form class="dialog-body" id="pinForm" autocomplete="off">
+      <label class="field">
+        <span>PIN</span>
+        <input class="pin-input" id="pinInput" type="password" inputmode="numeric" autocomplete="off" required>
+      </label>
+      <div class="error" id="pinError" role="alert"></div>
+      <div class="actions"><button class="btn primary" id="pinSubmit" type="submit">Unlock</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="wide" id="adminDialog" aria-labelledby="adminTitle">
+    <div class="dialog-head">
+      <h2 id="adminTitle">Manage hub</h2>
+      <button class="btn small" id="lockBtn" type="button">Lock and close</button>
+    </div>
+    <div class="dialog-body admin-grid">
+      <section>
+        <h3 class="list-title">App links</h3>
+        <ul class="admin-list" id="adminList"></ul>
+        <button class="btn small" id="newBtn" type="button">Add link</button>
+
+        <form class="settings" id="settingsForm" autocomplete="off">
+          <h3 class="list-title">Hub settings</h3>
+          <label class="field"><span>Hub title</span><input id="sTitle" type="text" maxlength="60" required></label>
+          <label class="field">
+            <span>Team notice</span>
+            <textarea id="sNotice" maxlength="240"></textarea>
+            <small>Leave blank to hide the notice.</small>
+          </label>
+          <div class="error" id="settingsError" role="alert"></div>
+          <button class="btn" id="settingsSave" type="submit">Save settings</button>
+        </form>
+      </section>
+
+      <form id="linkForm" autocomplete="off">
+        <h3 class="form-title" id="formTitle">Add link</h3>
+        <input id="fId" type="hidden">
+        <label class="field"><span>Title</span><input id="fTitle" type="text" maxlength="80" required></label>
+        <div class="pair">
+          <label class="field">
+            <span>Category</span>
+            <input id="fCategory" type="text" maxlength="40" list="categories" required>
+            <datalist id="categories"></datalist>
+          </label>
+          <label class="field">
+            <span>Status</span>
+            <select id="fStatus"><option>Active</option><option>Maintenance</option><option>Inactive</option></select>
+          </label>
+        </div>
+        <label class="field"><span>Description</span><textarea id="fDescription" maxlength="200"></textarea></label>
+        <label class="field"><span>App URL</span><input id="fUrl" type="url" placeholder="https://" required></label>
+        <label class="field">
+          <span>Icon</span>
+          <input id="fIcon" type="text" maxlength="500" placeholder="fa-solid fa-truck">
+          <small>Optional. Use a Font Awesome class, an emoji or an image link.</small>
+        </label>
+        <label class="check"><input id="fPinned" type="checkbox"> Feature this tool</label>
+        <div class="error" id="linkError" role="alert"></div>
+        <div class="actions">
+          <button class="btn primary" id="saveBtn" type="submit">Save link</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Your Apps Script Web App link
+      var API_URL = 'https://script.google.com/macros/s/AKfycbw3f7_tghkfiGWPcNmxWkzXhL8OhZ3PtR38wPMiyBYNjdj9gonim24ETq_TlQv-JIGX/exec';
+
+      var COLORS = ['#1542c9', '#c2410c', '#00757a', '#6d32d9', '#be185d', '#15803d', '#a16207', '#0369a1'];
+      var ICON_HINTS = [
+        [/report|performance|kpi|analytic/i, 'fa-chart-line'],
+        [/transfer|sto\b/i, 'fa-right-left'],
+        [/driver|pickup/i, 'fa-motorcycle'],
+        [/dispatch|deliver/i, 'fa-truck-fast'],
+        [/return/i, 'fa-rotate-left'],
+        [/stock|inventory|warehouse/i, 'fa-warehouse'],
+        [/scan|barcode/i, 'fa-barcode'],
+        [/order/i, 'fa-cart-shopping']
+      ];
+
+      var state = { links: [], query: '', pin: '', admin: { links: [] }, confirmId: '', snapshot: '' };
+      var $ = function (id) { return document.getElementById(id); };
+
+      function read(key) {
+        try { return localStorage.getItem(key); } catch (error) { return null; }
+      }
+      function write(key, value) {
+        try { localStorage.setItem(key, value); } catch (error) { /* Page works without saving */ }
+      }
+
+      /* Talking to Apps Script */
+      function handle(response) {
+        if (!response.ok) throw new Error('The hub could not reach Google. Try again.');
+        return response.json().then(function (result) {
+          if (!result.ok) throw new Error(result.error);
+          return result.data;
+        });
+      }
+      function getData(fresh) {
+        return fetch(API_URL + (fresh ? '?fresh=1' : '')).then(handle);
+      }
+      function post(body) {
+        // Plain text keeps the request simple enough for Apps Script to accept
+        return fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(body)
+        }).then(handle);
+      }
+
+      function el(tag, attrs, children) {
+        var node = document.createElement(tag);
+        Object.keys(attrs || {}).forEach(function (key) {
+          if (key === 'class') node.className = attrs[key];
+          else if (key === 'text') node.textContent = attrs[key];
+          else if (key === 'onclick') node.addEventListener('click', attrs[key]);
+          else node.setAttribute(key, attrs[key]);
+        });
+        (children || []).forEach(function (child) { if (child) node.appendChild(child); });
+        return node;
+      }
+
+      function isUrl(value) { return /^https?:\/\//i.test(String(value || '').trim()); }
+
+      function iconClass(link) {
+        var text = String(link.icon || '').trim();
+        if (/^[a-z0-9 -]+$/i.test(text) && /(^|\s)fa/i.test(text)) {
+          return /(^|\s)(fa-solid|fa-regular|fa-brands|fas|far|fab)(\s|$)/i.test(text) ? text : 'fa-solid ' + text;
+        }
+        if (text) return '';
+        var words = link.title + ' ' + link.description;
+        for (var i = 0; i < ICON_HINTS.length; i++) {
+          if (ICON_HINTS[i][0].test(words)) return 'fa-solid ' + ICON_HINTS[i][1];
+        }
+        return '';
+      }
+
+      function initials(title) {
+        var words = String(title).trim().split(/\s+/);
+        return (words[0].charAt(0) + (words[1] ? words[1].charAt(0) : '')).toUpperCase();
+      }
+
+      function iconNode(link, classes) {
+        var box = el('span', { class: 'tile-icon', 'aria-hidden': 'true' });
+        if (isUrl(link.icon)) {
+          var image = el('img', { src: link.icon, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer' });
+          image.addEventListener('error', function () { box.textContent = initials(link.title); });
+          box.appendChild(image);
+        } else if (classes) {
+          box.appendChild(el('i', { class: classes }));
+        } else if (link.icon && link.icon.length <= 4) {
+          box.textContent = link.icon;
+        } else {
+          box.textContent = initials(link.title);
+        }
+        return box;
+      }
+
+      /* Tiles */
+      function tile(link, colors) {
+        var hasUrl = isUrl(link.url);
+        var classes = iconClass(link);
+        var maintenance = link.status === 'Maintenance';
+        var attrs = {
+          class: 'tile' + (link.pinned ? ' featured' : '') + (hasUrl ? '' : ' no-link'),
+          style: '--tile:' + colors[link.category]
+        };
+        if (hasUrl) {
+          attrs.href = link.url;
+          attrs.target = '_blank';
+          attrs.rel = 'noopener noreferrer';
+        }
+        return el(hasUrl ? 'a' : 'div', attrs, [
+          classes ? el('i', { class: 'tile-mark ' + classes, 'aria-hidden': 'true' }) : null,
+          el('div', { class: 'tile-head' }, [
+            iconNode(link, classes),
+            el('span', { class: 'state' + (maintenance ? ' maintenance' : '') }, [
+              el('span', { text: link.status })
+            ])
+          ]),
+          el('div', { class: 'tile-text' }, [
+            el('div', { class: 'tile-title', text: link.title }),
+            el('div', { class: 'tile-desc', text: hasUrl ? link.description : 'App link has not been added yet.' })
+          ])
+        ]);
+      }
+
+      function showMessage(title, body, buttonText, action) {
+        var mosaic = $('mosaic');
+        mosaic.textContent = '';
+        mosaic.appendChild(el('div', { class: 'message' }, [
+          el('h2', { text: title }),
+          el('p', { text: body }),
+          buttonText ? el('button', { class: 'btn primary', type: 'button', text: buttonText, onclick: action }) : null
+        ]));
+      }
+
+      function render() {
+        var terms = state.query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        var colors = {};
+        var order = [];
+        state.links.forEach(function (link) {
+          if (order.indexOf(link.category) === -1) {
+            colors[link.category] = COLORS[order.length % COLORS.length];
+            order.push(link.category);
+          }
+        });
+
+        var visible = state.links.filter(function (link) {
+          var text = (link.title + ' ' + link.category + ' ' + link.description).toLowerCase();
+          return terms.every(function (term) { return text.indexOf(term) !== -1; });
+        }).sort(function (a, b) {
+          if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+          return order.indexOf(a.category) - order.indexOf(b.category);
+        });
+
+        if (!state.links.length) {
+          showMessage('No tools yet', 'Add the first app link to fill this page.', 'Add a link', openPin);
+          return;
+        }
+        if (!visible.length) {
+          showMessage('No matching tools', 'Check the spelling or try another word.');
+          return;
+        }
+        var mosaic = $('mosaic');
+        mosaic.textContent = '';
+        visible.forEach(function (link) { mosaic.appendChild(tile(link, colors)); });
+      }
+
+      function apply(data) {
+        var snapshot = JSON.stringify(data);
+        if (snapshot === state.snapshot) return;
+        state.snapshot = snapshot;
+        state.links = data.links || [];
+        $('hubTitle').textContent = data.title || 'Operations Hub';
+        document.title = data.title || 'Operations Hub';
+        $('notice').textContent = data.notice || '';
+        $('notice').hidden = !data.notice;
+        render();
+      }
+
+      function load(fresh) {
+        return getData(fresh).then(function (data) {
+          write('tbg-hub-data', JSON.stringify(data));
+          apply(data);
+        }).catch(function (error) {
+          if (state.links.length) return;
+          showMessage('Tools could not load', error.message, 'Try again', function () {
+            showMessage('Loading tools', 'Fetching the latest links.');
+            load(true);
+          });
+        });
+      }
+
+      /* Admin */
+      function openPin() {
+        $('pinInput').value = '';
+        $('pinError').textContent = '';
+        $('pinDialog').showModal();
+      }
+
+      function fetchAdmin() {
+        return post({ action: 'getAdminData', pin: state.pin }).then(function (data) {
+          state.admin = data;
+          state.confirmId = '';
+          renderAdmin();
+        });
+      }
+
+      function renderAdmin() {
+        var list = $('adminList');
+        list.textContent = '';
+        state.admin.links.forEach(function (link) {
+          var buttons = state.confirmId === link.id ? [
+            el('button', { class: 'btn small confirm', type: 'button', text: 'Confirm', onclick: function () { removeLink(link); } }),
+            el('button', { class: 'btn small', type: 'button', text: 'Keep', onclick: function () { state.confirmId = ''; renderAdmin(); } })
+          ] : [
+            el('button', { class: 'btn small', type: 'button', text: 'Edit', 'aria-label': 'Edit ' + link.title, onclick: function () { editLink(link); } }),
+            link.status === 'Inactive' ? null : el('button', { class: 'btn small danger', type: 'button', text: 'Remove', 'aria-label': 'Remove ' + link.title, onclick: function () { state.confirmId = link.id; renderAdmin(); } })
+          ];
+          list.appendChild(el('li', { class: 'admin-row' }, [
+            el('div', { class: 'admin-info' }, [
+              el('div', { class: 'admin-name', text: link.title }),
+              el('div', { class: 'admin-sub', text: link.category + (link.status === 'Active' ? '' : ', ' + link.status) })
+            ]),
+            el('div', { class: 'admin-btns' }, buttons)
+          ]));
+        });
+
+        var seen = {};
+        $('categories').textContent = '';
+        state.admin.links.forEach(function (link) {
+          if (seen[link.category]) return;
+          seen[link.category] = true;
+          $('categories').appendChild(el('option', { value: link.category }));
+        });
+      }
+
+      function clearForm() {
+        $('linkForm').reset();
+        $('fId').value = '';
+        $('fStatus').value = 'Active';
+        $('formTitle').textContent = 'Add link';
+        $('linkError').textContent = '';
+      }
+
+      function editLink(link) {
+        $('fId').value = link.id;
+        $('fTitle').value = link.title;
+        $('fCategory').value = link.category;
+        $('fDescription').value = link.description;
+        $('fUrl').value = link.url;
+        $('fIcon').value = link.icon;
+        $('fPinned').checked = link.pinned;
+        $('fStatus').value = link.status;
+        $('formTitle').textContent = 'Edit ' + link.title;
+        $('linkError').textContent = '';
+        $('fTitle').focus();
+      }
+
+      function refreshAll() {
+        return Promise.all([fetchAdmin(), load(true)]);
+      }
+
+      function removeLink(link) {
+        post({ action: 'deleteLink', pin: state.pin, id: link.id }).then(refreshAll).then(function () {
+          if ($('fId').value === link.id) clearForm();
+          toast(link.title + ' removed. Edit it and set Status to Active to restore it.');
+        }).catch(function (error) { toast(error.message); });
+      }
+
+      function closeAdmin() {
+        state.pin = '';
+        state.admin = { links: [] };
+        clearForm();
+        $('adminDialog').close();
+      }
+
+      var toastTimer = null;
+      function toast(message) {
+        $('toast').textContent = message;
+        $('toast').classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { $('toast').classList.remove('show'); }, 3600);
+      }
+
+      /* Theme and clock */
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        $('themeBtn').textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+      }
+      function tick() {
+        var now = new Date();
+        $('clockTime').textContent = now.toLocaleTimeString('en-GB');
+        $('clockDate').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      }
+
+      /* Events */
+      $('search').addEventListener('input', function (event) {
+        state.query = event.target.value;
+        render();
+      });
+      $('search').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          var first = document.querySelector('#mosaic a.tile');
+          if (first) first.click();
+        } else if (event.key === 'Escape') {
+          event.target.value = '';
+          state.query = '';
+          render();
+        }
+      });
+      document.addEventListener('keydown', function (event) {
+        var tag = document.activeElement && document.activeElement.tagName;
+        if (event.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !document.querySelector('dialog[open]')) {
+          event.preventDefault();
+          $('search').focus();
+        }
+      });
+      $('themeBtn').addEventListener('click', function () {
+        var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        write('tbg-hub-theme', next);
+        setTheme(next);
+      });
+      $('adminBtn').addEventListener('click', openPin);
+      $('pinCancel').addEventListener('click', function () { $('pinDialog').close(); });
+      $('pinForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var pin = $('pinInput').value;
+        $('pinSubmit').disabled = true;
+        $('pinError').textContent = '';
+        post({ action: 'verifyPin', pin: pin }).then(function (result) {
+          if (!result.ok) {
+            $('pinError').textContent = result.message;
+            $('pinInput').select();
+            return null;
+          }
+          state.pin = pin;
+          return fetchAdmin().then(function () {
+            $('pinDialog').close();
+            clearForm();
+            $('sTitle').value = state.admin.title;
+            $('sNotice').value = state.admin.notice;
+            $('adminDialog').showModal();
+          });
+        }).catch(function (error) {
+          $('pinError').textContent = error.message;
+        }).finally(function () {
+          $('pinSubmit').disabled = false;
+        });
+      });
+      $('lockBtn').addEventListener('click', closeAdmin);
+      $('adminDialog').addEventListener('cancel', function (event) {
+        event.preventDefault();
+        closeAdmin();
+      });
+      $('newBtn').addEventListener('click', function () {
+        clearForm();
+        $('fTitle').focus();
+      });
+      $('linkForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var link = {
+          id: $('fId').value,
+          title: $('fTitle').value,
+          category: $('fCategory').value,
+          description: $('fDescription').value,
+          url: $('fUrl').value,
+          icon: $('fIcon').value,
+          status: $('fStatus').value,
+          pinned: $('fPinned').checked
+        };
+        $('saveBtn').disabled = true;
+        $('linkError').textContent = '';
+        post({ action: 'saveLink', pin: state.pin, link: link }).then(refreshAll).then(function () {
+          clearForm();
+          toast(link.title + ' saved.');
+        }).catch(function (error) {
+          $('linkError').textContent = error.message;
+        }).finally(function () {
+          $('saveBtn').disabled = false;
+        });
+      });
+      $('settingsForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        $('settingsSave').disabled = true;
+        $('settingsError').textContent = '';
+        post({
+          action: 'saveSettings',
+          pin: state.pin,
+          settings: { title: $('sTitle').value, notice: $('sNotice').value }
+        }).then(refreshAll).then(function () {
+          toast('Settings saved.');
+        }).catch(function (error) {
+          $('settingsError').textContent = error.message;
+        }).finally(function () {
+          $('settingsSave').disabled = false;
+        });
+      });
+
+      /* Start */
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(read('tbg-hub-theme') || (prefersDark ? 'dark' : 'light'));
+      tick();
+      setInterval(tick, 1000);
+
+      var saved = read('tbg-hub-data');
+      if (saved) {
+        try { apply(JSON.parse(saved)); } catch (error) { /* Fresh data loads next */ }
+      }
+      load(false);
+      setInterval(function () {
+        if (!document.hidden) load(true);
+      }, 5 * 60 * 1000);
+    })();
+  </script>
+</body>
+</html>
