@@ -93,6 +93,10 @@
     .tile-desc { display: -webkit-box; margin-top: 5px; overflow: hidden; font-size: 15px; line-height: 1.3; opacity: .92; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
     .tile.no-link { filter: saturate(.45); }
 
+    .credit { padding-bottom: 28px; color: var(--muted); font-size: 14.5px; text-align: center; }
+    .credit a { color: inherit; font-weight: 600; text-underline-offset: 3px; }
+    .credit a:hover { color: var(--accent); }
+
     .message { grid-column: 1 / -1; padding: 44px 24px; text-align: center; background: var(--surface); border-radius: 18px; }
     .message h2 { margin-bottom: 6px; font: 600 27px/1.2 "Bricolage Grotesque", sans-serif; }
     .message p { color: var(--muted); }
@@ -189,6 +193,10 @@
       <div class="message"><h2>Loading tools</h2><p>Fetching the latest links.</p></div>
     </div>
   </main>
+
+  <footer class="credit wrap">
+    Designed and built by <a href="https://awagt.github.io/portfolio/" target="_blank" rel="noopener">Abdul Wajid</a>
+  </footer>
 
   <dialog id="pinDialog" aria-labelledby="pinTitle">
     <div class="dialog-head">
