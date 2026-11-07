@@ -1,0 +1,1321 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ECOM-HUB</title>
+  <meta name="description" content="The Blue Group E-Commerce Operations Hub for Sports Corner and Sports For Less.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f2f5fc;
+      --surface: #ffffff;
+      --surface-2: #eaf0fb;
+      --ink: #0b1638;
+      --muted: #4e5b7d;
+      --line: #d3dbee;
+      --royal: #1d4ed8;
+      --royal-ink: #ffffff;
+      --royal-soft: #e1e9fd;
+      --navy: #071233;
+      --plate: #0a1638;
+      --glow: rgba(29, 78, 216, .16);
+      --dot: 29, 78, 216;
+      --ok: #0f8a4f;
+      --warn-bg: #ffc83d;
+      --warn-ink: #2b1d00;
+      --danger: #b3261e;
+      --focus: #1d4ed8;
+      --entity: #1d4ed8;
+      --head: "Archivo", "Figtree", "Segoe UI", Arial, sans-serif;
+    }
+    [data-theme="dark"] {
+      --bg: #050b1f;
+      --surface: #0c1733;
+      --surface-2: #13224a;
+      --ink: #eaf0ff;
+      --muted: #a2b2d6;
+      --line: #213260;
+      --royal: #3268ff;
+      --royal-soft: #15275a;
+      --navy: #030817;
+      --plate: #071028;
+      --glow: rgba(76, 201, 255, .18);
+      --dot: 92, 200, 255;
+      --ok: #3fd68f;
+      --danger: #ff8a80;
+      --focus: #8fb2ff;
+    }
+    [data-entity="sfl"] { --entity: #f39200; }
+    [data-entity="sc"] { --entity: #3268ff; }
+
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font: 400 16px/1.45 Figtree, "Segoe UI", Roboto, Arial, sans-serif; }
+    h1, h2, h3, p { margin: 0; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    button { cursor: pointer; }
+    img { display: block; max-width: 100%; }
+    [hidden] { display: none !important; }
+    :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+    .wrap { width: min(1240px, 100%); margin: 0 auto; padding: 0 28px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* Shared buttons */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 10px; font-weight: 600; text-decoration: none; }
+    .btn:hover { border-color: var(--royal); }
+    .btn.primary { color: #ffffff; background: var(--royal); border-color: var(--royal); }
+    .btn.danger { color: var(--danger); }
+    .btn.confirm { color: #ffffff; background: #b3261e; border-color: #b3261e; }
+    .btn.small { min-height: 36px; padding: 0 11px; font-size: 14.5px; }
+    .btn:disabled { opacity: .6; cursor: wait; }
+    .bar-btn { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 0 13px; color: #ffffff; background: transparent; border: 1px solid transparent; border-radius: 10px; font-weight: 600; }
+    .bar-btn:hover { background: rgba(255, 255, 255, .1); }
+    .bar-btn.outline { border-color: rgba(255, 255, 255, .45); }
+    .bar-btn:focus-visible { outline-color: #ffffff; }
+
+    /* ---------- Intro ---------- */
+    .intro { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: #02060f; transition: opacity .6s ease; }
+    .intro video { width: 100%; height: 100%; object-fit: cover; }
+    .intro.leaving { opacity: 0; pointer-events: none; }
+    .intro-skip { position: absolute; right: 24px; bottom: 24px; }
+
+    /* ---------- Entity selection ---------- */
+    .select { position: relative; min-height: 100vh; overflow: hidden; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 18%, var(--surface-2) 0%, var(--bg) 62%); transition: opacity .32s ease; }
+    .select.leaving { opacity: 0; }
+    .net { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+    .select-top { position: relative; display: flex; align-items: center; justify-content: space-between; padding-top: 18px; }
+    .select-top .bar-btn { color: var(--ink); }
+    .select-top .bar-btn:hover { background: var(--surface-2); }
+    .select-top .bar-btn:focus-visible { outline-color: var(--focus); }
+    .select-main { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: center; padding-block: 8px 36px; }
+    .brand-block { text-align: center; }
+    .tbg-logo { width: 92px; margin: 0 auto 18px; }
+    [data-theme="light"] .tbg-logo { filter: brightness(.18) sepia(1) hue-rotate(185deg) saturate(4); }
+    .hub-name { font: 800 clamp(30px, 5vw, 58px)/1.02 var(--head); font-stretch: 112%; letter-spacing: -.01em; }
+    .tagline { margin-top: 12px; color: var(--muted); font-size: 15px; font-weight: 500; letter-spacing: .32em; text-transform: uppercase; }
+    .prompt { margin-top: 22px; color: var(--muted); font-size: 17px; }
+
+    .entity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; width: min(940px, 100%); margin: 22px auto 0; }
+    .entity-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      overflow: hidden;
+      text-align: left;
+      color: var(--ink);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 18px 50px -28px rgba(3, 10, 40, .55);
+      transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    }
+    .entity-card:hover { transform: translateY(-6px); border-color: var(--entity); box-shadow: 0 26px 60px -26px var(--glow), 0 0 0 1px var(--entity); }
+    .entity-card.chosen { transform: scale(1.03); border-color: var(--entity); box-shadow: 0 0 0 2px var(--entity), 0 30px 80px -20px var(--glow); }
+    .plate { position: relative; display: grid; place-items: center; height: 150px; padding: 24px 34px; overflow: hidden; background: var(--plate); }
+    .plate::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: var(--entity); }
+    .plate img { max-height: 100%; width: auto; max-width: 100%; object-fit: contain; }
+    .wordmark { color: #ffffff; font: 800 34px/1 var(--head); font-style: italic; }
+    .wordmark span { color: #f39200; }
+    .entity-body { display: flex; flex-direction: column; gap: 8px; flex: 1; padding: 22px 26px 24px; }
+    .entity-name { display: flex; align-items: center; justify-content: space-between; gap: 12px; font: 700 26px/1.15 var(--head); font-stretch: 108%; }
+    .last-used { flex: none; padding: 4px 10px; color: var(--royal); background: var(--royal-soft); border-radius: 999px; font: 600 13px/1.3 Figtree, sans-serif; }
+    [data-theme="dark"] .last-used { color: #cfe0ff; }
+    .entity-desc { color: var(--muted); }
+    .entity-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 12px; font-weight: 600; }
+    .entity-count { color: var(--muted); font-weight: 500; }
+    .enter { display: inline-flex; align-items: center; gap: 8px; color: var(--entity); }
+    [data-theme="light"] [data-entity="sfl"] .enter { color: #b45f00; }
+    .enter i { transition: transform .2s ease; }
+    .entity-card:hover .enter i { transform: translateX(4px); }
+
+    .credit { padding-bottom: 26px; color: var(--muted); font-size: 14.5px; text-align: center; }
+    .credit a { color: inherit; font-weight: 600; text-underline-offset: 3px; }
+    .credit a:hover { color: var(--royal); }
+    .credit button { padding: 0; color: inherit; background: none; border: 0; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .select .credit { position: relative; }
+
+    /* ---------- Dashboard ---------- */
+    .dash { opacity: 1; transition: opacity .32s ease; }
+    .dash.entering { opacity: 0; }
+    .dash-head { color: #ffffff; background: linear-gradient(180deg, var(--navy) 0%, #0a1d5c 100%); border-bottom: 4px solid var(--entity); }
+    [data-theme="dark"] .dash-head { background: linear-gradient(180deg, #030817 0%, #0a1a4d 100%); }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 14px; }
+    .identity { display: flex; align-items: center; gap: 14px; min-width: 0; }
+    .mini-plate { display: grid; place-items: center; flex: none; width: 128px; height: 50px; padding: 7px 10px; background: rgba(255, 255, 255, .07); border: 1px solid rgba(255, 255, 255, .14); border-radius: 10px; }
+    .mini-plate img { max-height: 100%; width: auto; object-fit: contain; }
+    .mini-plate .wordmark { font-size: 15px; }
+    .hub-brand { min-width: 0; }
+    .hub-brand strong { display: block; overflow: hidden; font: 700 20px/1.1 var(--head); font-stretch: 110%; text-overflow: ellipsis; white-space: nowrap; }
+    .hub-brand span { display: block; margin-top: 2px; color: #b9c8ee; font-size: 14px; }
+    .bar-actions { display: flex; align-items: center; gap: 6px; flex: none; }
+    .welcome { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; padding-block: 28px 30px; }
+    .welcome h1 { color: #c9d6f6; font: 600 clamp(18px, 2vw, 22px)/1.25 Figtree, sans-serif; }
+    .welcome h2 { margin-top: 6px; font: 800 clamp(34px, 5.4vw, 62px)/1 var(--head); font-stretch: 110%; letter-spacing: -.01em; }
+    .clock { flex: none; text-align: right; font-variant-numeric: tabular-nums; }
+    .clock-time { display: block; font: 700 clamp(28px, 3.2vw, 40px)/1 var(--head); }
+    .clock-date { display: block; margin-top: 6px; color: #c9d6f6; font-size: 15px; }
+    .search-row { padding-bottom: 26px; }
+    .search { display: block; width: 100%; height: 58px; padding: 0 22px; color: #0b1638; background: #ffffff; border: 0; border-radius: 14px; font-size: 18px; }
+    .search::placeholder { color: #55607c; }
+    .search:focus-visible { outline: 3px solid #8fb2ff; }
+    .notice { margin-top: 12px; padding: 11px 16px; color: var(--warn-ink); background: var(--warn-bg); border-radius: 10px; font-weight: 600; overflow-wrap: anywhere; }
+
+    .dash-main { padding-block: 22px 48px; }
+    .chips { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; }
+    .chip { display: inline-flex; flex: none; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; font-size: 15px; }
+    .chip:hover { border-color: var(--royal); }
+    .chip[aria-pressed="true"] { color: #ffffff; background: var(--royal); border-color: var(--royal); }
+    .chip-count { font-weight: 500; opacity: .75; font-variant-numeric: tabular-nums; }
+
+    .group { margin-top: 26px; }
+    .group-title { display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px; font: 700 21px/1.2 var(--head); font-stretch: 106%; }
+    .group-count { color: var(--muted); font: 500 15px/1 Figtree, sans-serif; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; }
+
+    .tile {
+      position: relative;
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      grid-template-rows: auto 1fr;
+      gap: 4px 14px;
+      min-height: 132px;
+      padding: 18px;
+      color: var(--ink);
+      text-decoration: none;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+    }
+    a.tile:hover { transform: translateY(-3px); border-color: var(--royal); box-shadow: 0 14px 30px -18px var(--glow); }
+    .tile-icon { display: grid; place-items: center; grid-row: span 2; width: 48px; height: 48px; overflow: hidden; color: var(--royal); background: var(--royal-soft); border-radius: 12px; font-size: 21px; font-weight: 700; }
+    [data-theme="dark"] .tile-icon { color: #cfe0ff; }
+    .tile-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .tile-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; min-width: 0; }
+    .tile-title { min-width: 0; font: 700 17.5px/1.25 var(--head); overflow-wrap: anywhere; }
+    .tile-desc { display: -webkit-box; overflow: hidden; color: var(--muted); font-size: 14.5px; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+    .tile-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 12px; grid-column: 2; margin-top: 8px; font-size: 13.5px; font-weight: 600; }
+    .state { display: inline-flex; align-items: center; gap: 6px; color: var(--ok); }
+    .state::before { content: ""; width: 9px; height: 9px; background: currentColor; border-radius: 50%; }
+    .state.maintenance { padding: 3px 9px; color: var(--warn-ink); background: var(--warn-bg); border-radius: 999px; }
+    .state.maintenance::before { display: none; }
+    .shared { color: var(--muted); }
+    .tile.no-link { opacity: .65; }
+
+    .featured .tile { color: #ffffff; background: var(--royal); border-color: var(--royal); }
+    .featured a.tile:hover { border-color: #ffffff; box-shadow: 0 16px 34px -16px rgba(29, 78, 216, .6); }
+    .featured .tile-icon { color: #ffffff; background: rgba(255, 255, 255, .18); }
+    .featured .tile-desc, .featured .shared { color: #dbe5ff; }
+    .featured .state { color: #ffffff; }
+    .featured .state::before { background: #7dffb5; }
+    .featured .state.maintenance { color: var(--warn-ink); }
+    .featured a.tile:focus-visible { outline-color: #ffffff; }
+
+    .message { padding: 44px 24px; text-align: center; background: var(--surface); border: 1px dashed var(--line); border-radius: 16px; }
+    .message h2 { margin-bottom: 6px; font: 700 24px/1.2 var(--head); }
+    .message p { color: var(--muted); }
+    .message button { margin-top: 16px; }
+
+    /* ---------- Admin ---------- */
+    .field { display: block; margin-bottom: 14px; border: 0; padding: 0; min-width: 0; }
+    .field > span, .field legend { display: block; margin-bottom: 5px; padding: 0; font-size: 15px; font-weight: 600; }
+    .field small { display: block; margin-top: 4px; color: var(--muted); font-size: 13.5px; }
+    .field input:not([type="radio"]), .field select, .field textarea { width: 100%; min-height: 44px; padding: 9px 11px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+    .field textarea { min-height: 70px; resize: vertical; }
+    .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .check { display: flex; align-items: center; gap: 10px; min-height: 44px; margin-bottom: 8px; font-weight: 500; }
+    .check input { width: 20px; height: 20px; accent-color: var(--royal); }
+    .choices { display: grid; gap: 6px; }
+    .choice { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 9px; font-weight: 500; }
+    .choice:has(input:checked) { border-color: var(--royal); background: var(--royal-soft); }
+    .choice input { width: 18px; height: 18px; accent-color: var(--royal); }
+    .error { min-height: 22px; margin-top: 6px; color: var(--danger); font-size: 15px; font-weight: 500; }
+    .warning { margin-bottom: 14px; padding: 10px 12px; color: var(--warn-ink); background: var(--warn-bg); border-radius: 9px; font-weight: 600; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+
+    dialog { width: min(420px, calc(100vw - 24px)); max-height: calc(100dvh - 24px); padding: 0; color: var(--ink); background: var(--surface); border: 0; border-radius: 16px; }
+    dialog.wide { width: min(900px, calc(100vw - 24px)); }
+    dialog::backdrop { background: rgba(2, 6, 20, .72); }
+    .dialog-head { position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; background: var(--surface); border-bottom: 1px solid var(--line); }
+    .dialog-head h2 { font: 700 23px/1.15 var(--head); }
+    .dialog-body { padding: 20px; }
+    .pin-input { height: 58px; text-align: center; font-size: 26px; letter-spacing: .3em; }
+    .admin-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+    .list-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+    .list-head select { min-height: 36px; padding: 0 8px; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; font-size: 14.5px; }
+    .admin-list { margin: 0 0 16px; padding: 0; list-style: none; }
+    .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
+    .admin-row.selected { padding-left: 10px; box-shadow: inset 3px 0 0 var(--royal); }
+    .admin-info { min-width: 0; }
+    .admin-name { overflow: hidden; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+    .admin-sub { color: var(--muted); font-size: 14px; }
+    .admin-sub .unset { color: var(--danger); font-weight: 600; }
+    .admin-btns { display: flex; flex: none; gap: 6px; }
+    .list-title, .form-title { font: 700 20px/1.2 var(--head); }
+    .form-title { margin-bottom: 10px; }
+    .settings { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+    .settings .list-title { margin-bottom: 10px; }
+
+    .toast { position: fixed; left: 50%; bottom: 20px; z-index: 60; max-width: calc(100vw - 32px); padding: 11px 16px; color: #ffffff; background: #0b1638; border: 1px solid #5c6a96; border-radius: 10px; transform: translate(-50%, 90px); visibility: hidden; transition: transform .18s ease, visibility .18s; }
+    .toast.show { transform: translate(-50%, 0); visibility: visible; }
+
+    @media (max-width: 860px) {
+      .wrap { padding-inline: 16px; }
+      .entity-grid { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+      .plate { height: 128px; padding: 20px 28px; }
+      .topbar { flex-wrap: wrap; }
+      .identity { width: 100%; }
+      .bar-actions { width: 100%; }
+      .bar-actions .bar-btn { flex: 1; justify-content: center; padding: 0 6px; }
+      .bar-actions .bar-btn .label-long { display: none; }
+      .welcome { display: block; padding-block: 18px 22px; }
+      .clock { display: flex; align-items: baseline; gap: 10px; margin-top: 14px; text-align: left; }
+      .clock-date { margin: 0; font-size: 14px; }
+      .search { height: 54px; font-size: 17px; }
+      .grid { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+      .admin-grid { grid-template-columns: minmax(0, 1fr); }
+    }
+    @media (max-width: 420px) {
+      .pair { grid-template-columns: minmax(0, 1fr); gap: 0; }
+      .tagline { letter-spacing: .18em; font-size: 13px; }
+      .mini-plate { width: 104px; height: 44px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .entity-card, .tile, .toast, .select, .dash, .intro, .enter i { transition: none; }
+      .entity-card:hover, a.tile:hover, .entity-card.chosen { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Intro film: plays once per browser session, before the entity choice -->
+  <div class="intro" id="intro" hidden>
+    <video id="introVideo" muted playsinline preload="auto" aria-label="E-Commerce Operations Hub introduction"></video>
+    <button class="bar-btn outline intro-skip" id="introSkip" type="button">Skip intro</button>
+  </div>
+
+  <!-- Screen 1: choose an entity -->
+  <section class="select" id="selectScreen" aria-labelledby="selectTitle" hidden>
+    <canvas class="net" id="net" aria-hidden="true"></canvas>
+    <div class="wrap select-top">
+      <span></span>
+      <button class="bar-btn theme-btn" type="button">Dark mode</button>
+    </div>
+    <div class="wrap select-main">
+      <div class="brand-block">
+        <img class="tbg-logo" src="logos/the-blue-group.png" alt="The Blue Group" width="232" height="232">
+        <h1 class="hub-name" id="selectTitle">ECOMMERCE OPERATIONS HUB</h1>
+        <p class="tagline">One hub. Connected operations.</p>
+        <p class="prompt">Choose a business to open its applications.</p>
+      </div>
+      <div class="entity-grid" id="entityGrid"></div>
+    </div>
+    <footer class="credit wrap">
+      Designed and built by <a href="https://awagt.github.io/portfolio/" target="_blank" rel="noopener">Abdul Wajid</a>.
+      <button id="replayIntro" type="button">Watch the intro</button>
+    </footer>
+  </section>
+
+  <!-- Screen 2: the selected entity's applications -->
+  <div class="dash" id="dashScreen" hidden>
+    <header class="dash-head">
+      <div class="wrap">
+        <div class="topbar">
+          <div class="identity">
+            <div class="mini-plate" id="dashLogo"></div>
+            <div class="hub-brand">
+              <strong id="hubTitle">ECOM-HUB</strong>
+              <span>The Blue Group E-Commerce</span>
+            </div>
+          </div>
+          <div class="bar-actions">
+            <button class="bar-btn theme-btn" type="button">Dark mode</button>
+            <button class="bar-btn" id="adminBtn" type="button">Admin Edit</button>
+            <button class="bar-btn outline" id="switchBtn" type="button"><i class="fa-solid fa-right-left" aria-hidden="true"></i> Switch<span class="label-long">Entity</span></button>
+          </div>
+        </div>
+        <div class="welcome">
+          <div>
+            <h1>Welcome to E-Commerce Operations</h1>
+            <h2 id="entityTitle">Sports Corner</h2>
+          </div>
+          <div class="clock">
+            <time class="clock-time" id="clockTime">--:--:--</time>
+            <span class="clock-date" id="clockDate"></span>
+          </div>
+        </div>
+        <div class="search-row">
+          <input class="search" id="search" type="search" placeholder="Search applications, categories or descriptions" aria-label="Search applications" autocomplete="off">
+          <div class="notice" id="notice" role="status" hidden></div>
+        </div>
+      </div>
+    </header>
+
+    <main class="wrap dash-main">
+      <div class="chips" id="chips" role="group" aria-label="Filter by category"></div>
+      <div id="apps" aria-live="polite">
+        <div class="message"><h2>Loading applications</h2><p>Fetching the latest links.</p></div>
+      </div>
+    </main>
+
+    <footer class="credit wrap">
+      Designed and built by <a href="https://awagt.github.io/portfolio/" target="_blank" rel="noopener">Abdul Wajid</a>
+    </footer>
+  </div>
+
+  <dialog id="pinDialog" aria-labelledby="pinTitle">
+    <div class="dialog-head">
+      <h2 id="pinTitle">Enter admin PIN</h2>
+      <button class="btn small" id="pinCancel" type="button">Cancel</button>
+    </div>
+    <form class="dialog-body" id="pinForm" autocomplete="off">
+      <label class="field">
+        <span>PIN</span>
+        <input class="pin-input" id="pinInput" type="password" inputmode="numeric" autocomplete="off" required>
+      </label>
+      <div class="error" id="pinError" role="alert"></div>
+      <div class="actions"><button class="btn primary" id="pinSubmit" type="submit">Unlock</button></div>
+    </form>
+  </dialog>
+
+  <dialog class="wide" id="adminDialog" aria-labelledby="adminTitle">
+    <div class="dialog-head">
+      <h2 id="adminTitle">Manage hub</h2>
+      <button class="btn small" id="lockBtn" type="button">Lock and close</button>
+    </div>
+    <div class="dialog-body">
+      <div class="warning" id="legacyWarning" hidden>Your Apps Script hasn't been updated yet, so entity assignments can't be saved. Deploy the new Code.gs first.</div>
+      <div class="admin-grid">
+        <section>
+          <div class="list-head">
+            <h3 class="list-title">Applications</h3>
+            <select id="adminFilter" aria-label="Show applications for">
+              <option value="all">All entities</option>
+              <option value="sc">Sports Corner</option>
+              <option value="sfl">Sports For Less</option>
+              <option value="both">Shared</option>
+              <option value="none">No entity set</option>
+            </select>
+          </div>
+          <ul class="admin-list" id="adminList"></ul>
+          <button class="btn small" id="newBtn" type="button">Add application</button>
+
+          <form class="settings" id="settingsForm" autocomplete="off">
+            <h3 class="list-title">Hub settings</h3>
+            <label class="field"><span>Hub title</span><input id="sTitle" type="text" maxlength="60" required></label>
+            <label class="field">
+              <span>Team notice</span>
+              <textarea id="sNotice" maxlength="240"></textarea>
+              <small>Shows on both entity dashboards. Leave blank to hide it.</small>
+            </label>
+            <div class="error" id="settingsError" role="alert"></div>
+            <button class="btn" id="settingsSave" type="submit">Save settings</button>
+          </form>
+        </section>
+
+        <form id="linkForm" autocomplete="off">
+          <h3 class="form-title" id="formTitle">Add application</h3>
+          <input id="fId" type="hidden">
+          <label class="field"><span>Title</span><input id="fTitle" type="text" maxlength="80" required></label>
+          <fieldset class="field">
+            <legend>Entity assignment</legend>
+            <div class="choices">
+              <label class="choice"><input type="radio" name="fEntity" value="sc" required> Sports Corner</label>
+              <label class="choice"><input type="radio" name="fEntity" value="sfl"> Sports For Less</label>
+              <label class="choice"><input type="radio" name="fEntity" value="both"> Both entities (shared)</label>
+            </div>
+          </fieldset>
+          <div class="pair">
+            <label class="field">
+              <span>Category</span>
+              <input id="fCategory" type="text" maxlength="40" list="categories" required>
+              <datalist id="categories"></datalist>
+            </label>
+            <label class="field">
+              <span>Status</span>
+              <select id="fStatus"><option>Active</option><option>Maintenance</option><option>Inactive</option></select>
+            </label>
+          </div>
+          <label class="field"><span>Description</span><textarea id="fDescription" maxlength="200"></textarea></label>
+          <label class="field"><span>App URL</span><input id="fUrl" type="url" placeholder="https://" required></label>
+          <label class="field">
+            <span>Icon</span>
+            <input id="fIcon" type="text" maxlength="500" placeholder="fa-solid fa-truck">
+            <small>Optional. Use a Font Awesome class, an emoji or an image link.</small>
+          </label>
+          <label class="check"><input id="fPinned" type="checkbox"> Feature this application</label>
+          <div class="error" id="linkError" role="alert"></div>
+          <div class="actions">
+            <button class="btn primary" id="saveBtn" type="submit">Save application</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      // Your Apps Script Web App link
+      var API_URL = 'https://script.google.com/macros/s/AKfycbw3f7_tghkfiGWPcNmxWkzXhL8OhZ3PtR38wPMiyBYNjdj9gonim24ETq_TlQv-JIGX/exec';
+      var INTRO_URL = 'intro.mp4';
+
+      var ENTITIES = {
+        sc: {
+          name: 'Sports Corner',
+          hash: 'sports-corner',
+          logo: 'logos/sports-corner.png',
+          desc: 'Access Sports Corner E-Commerce Operations applications, tools and resources.'
+        },
+        sfl: {
+          name: 'Sports For Less',
+          hash: 'sports-for-less',
+          logo: 'logos/sports-for-less.png',
+          desc: 'Access Sports For Less E-Commerce Operations applications, tools and resources.'
+        }
+      };
+      var ORDER = ['sc', 'sfl'];
+
+      var ICON_HINTS = [
+        [/report|performance|kpi|analytic/i, 'fa-chart-line'],
+        [/transfer|\bsto\b/i, 'fa-right-left'],
+        [/driver|pickup/i, 'fa-motorcycle'],
+        [/dispatch|deliver/i, 'fa-truck-fast'],
+        [/return/i, 'fa-rotate-left'],
+        [/magento|magneto|storefront/i, 'fa-store'],
+        [/middleware/i, 'fa-network-wired'],
+        [/payment|gateway|refund|cashier|\baps\b|tapos|paylater/i, 'fa-credit-card'],
+        [/3pl|shipping|courier|post|portal/i, 'fa-globe'],
+        [/stock|inventory|warehouse/i, 'fa-warehouse'],
+        [/scan|barcode/i, 'fa-barcode'],
+        [/order/i, 'fa-cart-shopping']
+      ];
+
+      var state = {
+        data: null,
+        links: [],
+        legacy: false,
+        entity: null,
+        query: '',
+        category: 'all',
+        pin: '',
+        admin: { links: [] },
+        confirmId: '',
+        snapshot: ''
+      };
+      var $ = function (id) { return document.getElementById(id); };
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function read(key) {
+        try { return localStorage.getItem(key); } catch (error) { return null; }
+      }
+      function write(key, value) {
+        try { localStorage.setItem(key, value); } catch (error) { /* Page works without saving */ }
+      }
+      function readSession(key) {
+        try { return sessionStorage.getItem(key); } catch (error) { return null; }
+      }
+      function writeSession(key, value) {
+        try { sessionStorage.setItem(key, value); } catch (error) { /* Intro may replay */ }
+      }
+
+      /* ---------- Talking to Apps Script (unchanged API) ---------- */
+      function handle(response) {
+        if (!response.ok) throw new Error('The hub could not reach Google. Try again.');
+        return response.json().then(function (result) {
+          if (!result.ok) throw new Error(result.error);
+          return result.data;
+        });
+      }
+      function getData(fresh) {
+        return fetch(API_URL + (fresh ? '?fresh=1' : '')).then(handle);
+      }
+      function post(body) {
+        // Plain text keeps the request simple enough for Apps Script to accept
+        return fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(body)
+        }).then(handle);
+      }
+
+      /* ---------- Small helpers ---------- */
+      function el(tag, attrs, children) {
+        var node = document.createElement(tag);
+        Object.keys(attrs || {}).forEach(function (key) {
+          if (key === 'class') node.className = attrs[key];
+          else if (key === 'text') node.textContent = attrs[key];
+          else if (key === 'onclick') node.addEventListener('click', attrs[key]);
+          else node.setAttribute(key, attrs[key]);
+        });
+        (children || []).forEach(function (child) { if (child) node.appendChild(child); });
+        return node;
+      }
+      function isUrl(value) { return /^https?:\/\//i.test(String(value || '').trim()); }
+      function plural(count, word) { return count + ' ' + word + (count === 1 ? '' : 's'); }
+
+      /** Returns the entity keys ("sc", "sfl") an application belongs to. */
+      function keysFor(link) {
+        if (state.legacy) return ORDER.slice();
+        var names = Array.isArray(link.entities) ? link.entities : [];
+        return ORDER.filter(function (key) { return names.indexOf(ENTITIES[key].name) !== -1; });
+      }
+      function belongs(link, key) { return keysFor(link).indexOf(key) !== -1; }
+      function entityLabel(link) {
+        var keys = keysFor(link);
+        if (keys.length === 2) return 'Both entities';
+        if (keys.length === 1) return ENTITIES[keys[0]].name;
+        return '';
+      }
+
+      function logoNode(key, extraClass) {
+        var entity = ENTITIES[key];
+        var image = el('img', { src: entity.logo, alt: entity.name, class: extraClass || '' });
+        image.addEventListener('error', function () {
+          var mark = el('span', { class: 'wordmark', text: key === 'sfl' ? 'Sports ' : 'Sports Corner' });
+          if (key === 'sfl') mark.appendChild(el('span', { text: 'For Less' }));
+          image.replaceWith(mark);
+        });
+        return image;
+      }
+
+      function iconClass(link) {
+        var text = String(link.icon || '').trim();
+        if (/^[a-z0-9 -]+$/i.test(text) && /(^|\s)fa/i.test(text)) {
+          return /(^|\s)(fa-solid|fa-regular|fa-brands|fas|far|fab)(\s|$)/i.test(text) ? text : 'fa-solid ' + text;
+        }
+        if (text) return '';
+        var words = link.title + ' ' + link.description;
+        for (var i = 0; i < ICON_HINTS.length; i++) {
+          if (ICON_HINTS[i][0].test(words)) return 'fa-solid ' + ICON_HINTS[i][1];
+        }
+        return '';
+      }
+      function initials(title) {
+        var words = String(title).trim().split(/\s+/);
+        return (words[0].charAt(0) + (words[1] ? words[1].charAt(0) : '')).toUpperCase();
+      }
+      function iconNode(link) {
+        var box = el('span', { class: 'tile-icon', 'aria-hidden': 'true' });
+        var classes = iconClass(link);
+        if (isUrl(link.icon)) {
+          var image = el('img', { src: link.icon, alt: '', loading: 'lazy', referrerpolicy: 'no-referrer' });
+          image.addEventListener('error', function () { box.textContent = initials(link.title); });
+          box.appendChild(image);
+        } else if (classes) {
+          box.appendChild(el('i', { class: classes }));
+        } else if (link.icon && link.icon.length <= 4) {
+          box.textContent = link.icon;
+        } else {
+          box.textContent = initials(link.title);
+        }
+        return box;
+      }
+
+      /* ---------- Entity selection screen ---------- */
+      function renderEntityCards() {
+        var grid = $('entityGrid');
+        var last = read('tbg-hub-entity');
+        grid.textContent = '';
+        ORDER.forEach(function (key) {
+          var entity = ENTITIES[key];
+          var count = state.data ? state.links.filter(function (link) { return belongs(link, key); }).length : null;
+          var card = el('button', {
+            class: 'entity-card',
+            type: 'button',
+            'data-entity': key,
+            'aria-label': 'Open ' + entity.name + ' applications'
+          }, [
+            el('div', { class: 'plate' }, [logoNode(key)]),
+            el('div', { class: 'entity-body' }, [
+              el('div', { class: 'entity-name' }, [
+                el('span', { text: entity.name }),
+                last === key ? el('span', { class: 'last-used', text: 'Last used' }) : null
+              ]),
+              el('p', { class: 'entity-desc', text: entity.desc }),
+              el('div', { class: 'entity-foot' }, [
+                el('span', { class: 'entity-count', text: count === null ? '' : plural(count, 'application') }),
+                el('span', { class: 'enter' }, [
+                  document.createTextNode('Open dashboard'),
+                  el('i', { class: 'fa-solid fa-arrow-right', 'aria-hidden': 'true' })
+                ])
+              ])
+            ])
+          ]);
+          card.addEventListener('click', function () { chooseEntity(key, card); });
+          grid.appendChild(card);
+        });
+      }
+
+      function chooseEntity(key, card) {
+        write('tbg-hub-entity', key);
+        if (reduceMotion || !card) {
+          go(key);
+          return;
+        }
+        card.classList.add('chosen');
+        $('selectScreen').classList.add('leaving');
+        setTimeout(function () { go(key); }, 320);
+      }
+
+      /* ---------- Routing: #sports-corner, #sports-for-less, or the selection screen ---------- */
+      function keyFromHash() {
+        var hash = location.hash.replace(/^#\/?/, '');
+        for (var i = 0; i < ORDER.length; i++) {
+          if (ENTITIES[ORDER[i]].hash === hash) return ORDER[i];
+        }
+        return null;
+      }
+      function go(key) {
+        var target = key ? '#' + ENTITIES[key].hash : '#select';
+        if (location.hash === target) route();
+        else location.hash = target;
+      }
+
+      function route() {
+        var key = keyFromHash();
+        if (key) showDashboard(key);
+        else showSelection();
+      }
+
+      function showSelection() {
+        state.entity = null;
+        document.documentElement.removeAttribute('data-entity');
+        document.title = 'ECOM-HUB';
+        $('dashScreen').hidden = true;
+        $('selectScreen').hidden = false;
+        $('selectScreen').classList.remove('leaving');
+        renderEntityCards();
+        network.start();
+        window.scrollTo(0, 0);
+      }
+
+      function showDashboard(key) {
+        var changed = state.entity !== key;
+        state.entity = key;
+        write('tbg-hub-entity', key);
+        document.documentElement.setAttribute('data-entity', key);
+        network.stop();
+        $('selectScreen').hidden = true;
+        $('dashScreen').hidden = false;
+
+        if (changed) {
+          state.query = '';
+          state.category = 'all';
+          $('search').value = '';
+          $('entityTitle').textContent = ENTITIES[key].name;
+          $('dashLogo').textContent = '';
+          $('dashLogo').appendChild(logoNode(key));
+          window.scrollTo(0, 0);
+          if (!reduceMotion) {
+            $('dashScreen').classList.add('entering');
+            requestAnimationFrame(function () {
+              requestAnimationFrame(function () { $('dashScreen').classList.remove('entering'); });
+            });
+          }
+        }
+        document.title = ENTITIES[key].name + ' | ' + hubTitle();
+        renderDashboard();
+      }
+
+      /* ---------- Dashboard ---------- */
+      function hubTitle() {
+        return (state.data && state.data.title) || 'ECOM-HUB';
+      }
+
+      function entityLinks() {
+        if (!state.entity) return [];
+        return state.links.filter(function (link) { return belongs(link, state.entity); });
+      }
+
+      function categoriesOf(links) {
+        var order = [];
+        links.forEach(function (link) {
+          if (order.indexOf(link.category) === -1) order.push(link.category);
+        });
+        return order;
+      }
+
+      function renderChips(links) {
+        var chips = $('chips');
+        var categories = categoriesOf(links);
+        if (state.category !== 'all' && categories.indexOf(state.category) === -1) state.category = 'all';
+        chips.textContent = '';
+        chips.hidden = links.length === 0;
+        [['all', 'All applications', links.length]].concat(categories.map(function (name) {
+          return [name, name, links.filter(function (link) { return link.category === name; }).length];
+        })).forEach(function (item) {
+          chips.appendChild(el('button', {
+            class: 'chip',
+            type: 'button',
+            'aria-pressed': String(state.category === item[0]),
+            onclick: function () {
+              state.category = item[0];
+              renderDashboard();
+            }
+          }, [
+            el('span', { text: item[1] }),
+            el('span', { class: 'chip-count', text: String(item[2]) })
+          ]));
+        });
+      }
+
+      function tile(link) {
+        var hasUrl = isUrl(link.url);
+        var attrs = { class: 'tile' + (hasUrl ? '' : ' no-link') };
+        if (hasUrl) {
+          attrs.href = link.url;
+          attrs.target = '_blank';
+          attrs.rel = 'noopener noreferrer';
+        }
+        var shared = keysFor(link).length === 2 && !state.legacy;
+        return el(hasUrl ? 'a' : 'div', attrs, [
+          iconNode(link),
+          el('div', { class: 'tile-top' }, [el('span', { class: 'tile-title', text: link.title })]),
+          el('div', { class: 'tile-desc', text: hasUrl ? link.description : 'Application link has not been added yet.' }),
+          el('div', { class: 'tile-meta' }, [
+            el('span', { class: 'state' + (link.status === 'Maintenance' ? ' maintenance' : ''), text: link.status }),
+            shared ? el('span', { class: 'shared', text: 'Shared' }) : null
+          ])
+        ]);
+      }
+
+      function group(title, links, extraClass) {
+        return el('section', { class: 'group ' + (extraClass || '') }, [
+          el('h3', { class: 'group-title' }, [
+            document.createTextNode(title),
+            el('span', { class: 'group-count', text: plural(links.length, 'application') })
+          ]),
+          el('div', { class: 'grid' }, links.map(tile))
+        ]);
+      }
+
+      function showMessage(title, body, buttonText, action) {
+        var apps = $('apps');
+        apps.textContent = '';
+        apps.appendChild(el('div', { class: 'message' }, [
+          el('h2', { text: title }),
+          el('p', { text: body }),
+          buttonText ? el('button', { class: 'btn primary', type: 'button', text: buttonText, onclick: action }) : null
+        ]));
+      }
+
+      function renderDashboard() {
+        if (!state.entity) return;
+        $('hubTitle').textContent = hubTitle();
+        if (!state.data) return; // Loading message stays until data arrives
+
+        var links = entityLinks();
+        renderChips(links);
+
+        var terms = state.query.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        var categories = categoriesOf(links);
+        var visible = links.filter(function (link) {
+          if (state.category !== 'all' && link.category !== state.category) return false;
+          var text = (link.title + ' ' + link.category + ' ' + link.description).toLowerCase();
+          return terms.every(function (term) { return text.indexOf(term) !== -1; });
+        });
+
+        if (!links.length) {
+          showMessage('No applications for ' + ENTITIES[state.entity].name + ' yet', 'An admin can add one, or assign an existing application to this entity.', 'Open Admin Edit', openPin);
+          return;
+        }
+        if (!visible.length) {
+          showMessage('No matching applications', 'Nothing in ' + ENTITIES[state.entity].name + ' matches your search. Check the spelling or try another word.', 'Clear search', function () {
+            $('search').value = '';
+            state.query = '';
+            state.category = 'all';
+            renderDashboard();
+            $('search').focus();
+          });
+          return;
+        }
+
+        var apps = $('apps');
+        apps.textContent = '';
+        var browsing = !terms.length && state.category === 'all';
+        var featured = visible.filter(function (link) { return link.pinned; });
+        if (browsing && featured.length) apps.appendChild(group('Featured', featured, 'featured'));
+
+        categories.forEach(function (name) {
+          var inGroup = visible.filter(function (link) {
+            return link.category === name && !(browsing && link.pinned);
+          }).sort(function (a, b) { return (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0); });
+          if (inGroup.length) apps.appendChild(group(name, inGroup));
+        });
+      }
+
+      function apply(data) {
+        var snapshot = JSON.stringify(data);
+        if (snapshot === state.snapshot) return;
+        state.snapshot = snapshot;
+        state.data = data;
+        state.links = data.links || [];
+        // A backend without entity support sends no "entities" list: show everything rather than nothing
+        state.legacy = state.links.length > 0 && !state.links.some(function (link) { return Array.isArray(link.entities); });
+        $('notice').textContent = data.notice || '';
+        $('notice').hidden = !data.notice;
+        if (state.entity) showDashboard(state.entity);
+        else if (!$('selectScreen').hidden) renderEntityCards();
+      }
+
+      function load(fresh) {
+        return getData(fresh).then(function (data) {
+          write('tbg-hub-data-v3', JSON.stringify(data));
+          apply(data);
+        }).catch(function (error) {
+          if (state.data) {
+            if (fresh) toast('Refresh failed: ' + error.message);
+            return;
+          }
+          if (state.entity) {
+            showMessage('Applications could not load', error.message, 'Try again', function () {
+              showMessage('Loading applications', 'Fetching the latest links.');
+              load(true);
+            });
+          } else {
+            toast('Applications could not load: ' + error.message);
+          }
+        });
+      }
+
+      /* ---------- Admin ---------- */
+      function openPin() {
+        $('pinInput').value = '';
+        $('pinError').textContent = '';
+        $('pinDialog').showModal();
+      }
+
+      function fetchAdmin() {
+        return post({ action: 'getAdminData', pin: state.pin }).then(function (data) {
+          state.admin = data;
+          state.confirmId = '';
+          renderAdmin();
+        });
+      }
+
+      function adminLegacy() {
+        var links = state.admin.links || [];
+        return links.length > 0 && !links.some(function (link) { return Array.isArray(link.entities); });
+      }
+
+      function adminKeys(link) {
+        var names = Array.isArray(link.entities) ? link.entities : [];
+        return ORDER.filter(function (key) { return names.indexOf(ENTITIES[key].name) !== -1; });
+      }
+
+      function renderAdmin() {
+        var list = $('adminList');
+        var filter = $('adminFilter').value;
+        var legacy = adminLegacy();
+        $('legacyWarning').hidden = !legacy;
+        list.textContent = '';
+
+        var rows = (state.admin.links || []).filter(function (link) {
+          var keys = adminKeys(link);
+          if (filter === 'sc' || filter === 'sfl') return keys.indexOf(filter) !== -1;
+          if (filter === 'both') return keys.length === 2;
+          if (filter === 'none') return keys.length === 0;
+          return true;
+        });
+        if (!rows.length) list.appendChild(el('li', { class: 'admin-row', text: 'No applications match this filter.' }));
+
+        rows.forEach(function (link) {
+          var keys = adminKeys(link);
+          var entityText = keys.length === 2 ? 'Both entities' : keys.length === 1 ? ENTITIES[keys[0]].name : '';
+          var buttons = state.confirmId === link.id ? [
+            el('button', { class: 'btn small confirm', type: 'button', text: 'Confirm', onclick: function () { removeLink(link); } }),
+            el('button', { class: 'btn small', type: 'button', text: 'Keep', onclick: function () { state.confirmId = ''; renderAdmin(); } })
+          ] : [
+            el('button', { class: 'btn small', type: 'button', text: 'Edit', 'aria-label': 'Edit ' + link.title, onclick: function () { editLink(link); } }),
+            link.status === 'Inactive' ? null : el('button', { class: 'btn small danger', type: 'button', text: 'Remove', 'aria-label': 'Remove ' + link.title, onclick: function () { state.confirmId = link.id; renderAdmin(); } })
+          ];
+          list.appendChild(el('li', { class: 'admin-row' + (String($('fId').value) === String(link.id) ? ' selected' : '') }, [
+            el('div', { class: 'admin-info' }, [
+              el('div', { class: 'admin-name', text: link.title }),
+              el('div', { class: 'admin-sub' }, [
+                document.createTextNode(link.category + ', '),
+                legacy ? document.createTextNode('entity not available') :
+                  entityText ? document.createTextNode(entityText) : el('span', { class: 'unset', text: 'No entity set, hidden' }),
+                link.status === 'Active' ? null : document.createTextNode(', ' + link.status)
+              ])
+            ]),
+            el('div', { class: 'admin-btns' }, buttons)
+          ]));
+        });
+
+        var seen = {};
+        $('categories').textContent = '';
+        (state.admin.links || []).forEach(function (link) {
+          if (seen[link.category]) return;
+          seen[link.category] = true;
+          $('categories').appendChild(el('option', { value: link.category }));
+        });
+      }
+
+      function setEntityChoice(value) {
+        Array.prototype.forEach.call(document.querySelectorAll('input[name="fEntity"]'), function (input) {
+          input.checked = input.value === value;
+        });
+      }
+      function entityChoice() {
+        var checked = document.querySelector('input[name="fEntity"]:checked');
+        if (!checked) return [];
+        if (checked.value === 'both') return ORDER.map(function (key) { return ENTITIES[key].name; });
+        return [ENTITIES[checked.value].name];
+      }
+
+      function clearForm() {
+        $('linkForm').reset();
+        $('fId').value = '';
+        $('fStatus').value = 'Active';
+        setEntityChoice(state.entity || '');
+        $('formTitle').textContent = 'Add application';
+        $('linkError').textContent = '';
+      }
+
+      function editLink(link) {
+        var keys = adminKeys(link);
+        $('fId').value = link.id;
+        $('fTitle').value = link.title;
+        $('fCategory').value = link.category;
+        $('fDescription').value = link.description;
+        $('fUrl').value = link.url;
+        $('fIcon').value = link.icon;
+        $('fPinned').checked = link.pinned;
+        $('fStatus').value = link.status;
+        setEntityChoice(keys.length === 2 ? 'both' : keys[0] || '');
+        $('formTitle').textContent = 'Edit ' + link.title;
+        $('linkError').textContent = '';
+        state.confirmId = '';
+        renderAdmin();
+        $('fTitle').focus();
+      }
+
+      function refreshAll() {
+        return Promise.all([fetchAdmin(), load(true)]);
+      }
+
+      function removeLink(link) {
+        post({ action: 'deleteLink', pin: state.pin, id: link.id }).then(refreshAll).then(function () {
+          if (String($('fId').value) === String(link.id)) clearForm();
+          renderAdmin();
+          toast(link.title + ' removed. Edit it and set Status to Active to restore it.');
+        }).catch(function (error) { toast(error.message); });
+      }
+
+      function closeAdmin() {
+        state.pin = '';
+        state.admin = { links: [] };
+        clearForm();
+        $('adminDialog').close();
+      }
+
+      var toastTimer = null;
+      function toast(message) {
+        $('toast').textContent = message;
+        $('toast').classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { $('toast').classList.remove('show'); }, 3800);
+      }
+
+      /* ---------- Background network (inspired by the intro film) ---------- */
+      var network = (function () {
+        var canvas = $('net');
+        var context = canvas.getContext('2d');
+        var points = [];
+        var running = false;
+        var frame = null;
+        var width = 0;
+        var height = 0;
+        var color = '92, 200, 255';
+
+        function resize() {
+          var ratio = Math.min(window.devicePixelRatio || 1, 2);
+          width = canvas.clientWidth;
+          height = canvas.clientHeight;
+          canvas.width = width * ratio;
+          canvas.height = height * ratio;
+          context.setTransform(ratio, 0, 0, ratio, 0, 0);
+          var count = Math.max(28, Math.min(90, Math.round(width * height / 15000)));
+          points = [];
+          for (var i = 0; i < count; i++) {
+            points.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - .5) * .28,
+              vy: (Math.random() - .5) * .28,
+              r: Math.random() * 1.6 + .6
+            });
+          }
+        }
+
+        function draw() {
+          context.clearRect(0, 0, width, height);
+          for (var i = 0; i < points.length; i++) {
+            var a = points[i];
+            for (var j = i + 1; j < points.length; j++) {
+              var b = points[j];
+              var dx = a.x - b.x;
+              var dy = a.y - b.y;
+              var distance = Math.sqrt(dx * dx + dy * dy);
+              if (distance < 140) {
+                context.strokeStyle = 'rgba(' + color + ',' + ((1 - distance / 140) * .28).toFixed(3) + ')';
+                context.lineWidth = 1;
+                context.beginPath();
+                context.moveTo(a.x, a.y);
+                context.lineTo(b.x, b.y);
+                context.stroke();
+              }
+            }
+          }
+          for (var k = 0; k < points.length; k++) {
+            var p = points[k];
+            context.fillStyle = 'rgba(' + color + ',.75)';
+            context.beginPath();
+            context.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            context.fill();
+          }
+        }
+
+        function step() {
+          if (!running) return;
+          if (!document.hidden) {
+            points.forEach(function (p) {
+              p.x += p.vx;
+              p.y += p.vy;
+              if (p.x < -10) p.x = width + 10;
+              if (p.x > width + 10) p.x = -10;
+              if (p.y < -10) p.y = height + 10;
+              if (p.y > height + 10) p.y = -10;
+            });
+            draw();
+          }
+          frame = requestAnimationFrame(step);
+        }
+
+        return {
+          start: function () {
+            color = getComputedStyle(document.documentElement).getPropertyValue('--dot').trim() || color;
+            resize();
+            if (reduceMotion) {
+              draw();
+              return;
+            }
+            if (running) return;
+            running = true;
+            step();
+          },
+          stop: function () {
+            running = false;
+            if (frame) cancelAnimationFrame(frame);
+          },
+          refresh: function () {
+            if ($('selectScreen').hidden) return;
+            color = getComputedStyle(document.documentElement).getPropertyValue('--dot').trim() || color;
+            resize();
+            draw();
+          }
+        };
+      })();
+
+      /* ---------- Intro film ---------- */
+      function playIntro(done) {
+        var intro = $('intro');
+        var video = $('introVideo');
+        var finished = false;
+        function finish() {
+          if (finished) return;
+          finished = true;
+          writeSession('tbg-hub-intro', '1');
+          intro.classList.add('leaving');
+          setTimeout(function () {
+            intro.hidden = true;
+            intro.classList.remove('leaving');
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+          }, reduceMotion ? 0 : 600);
+          if (done) done();
+        }
+        intro.hidden = false;
+        video.onended = finish;
+        video.onerror = finish;
+        $('introSkip').onclick = finish;
+        video.src = INTRO_URL;
+        var attempt = video.play();
+        if (attempt && attempt.catch) attempt.catch(finish);
+        $('introSkip').focus();
+      }
+
+      /* ---------- Theme and clock ---------- */
+      function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        Array.prototype.forEach.call(document.querySelectorAll('.theme-btn'), function (button) {
+          button.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+        });
+        network.refresh();
+      }
+      function tick() {
+        var now = new Date();
+        $('clockTime').textContent = now.toLocaleTimeString('en-GB');
+        $('clockDate').textContent = now.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+      }
+
+      /* ---------- Events ---------- */
+      $('search').addEventListener('input', function (event) {
+        state.query = event.target.value;
+        renderDashboard();
+      });
+      $('search').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+          var first = document.querySelector('#apps a.tile');
+          if (first) first.click();
+        } else if (event.key === 'Escape') {
+          event.target.value = '';
+          state.query = '';
+          renderDashboard();
+        }
+      });
+      document.addEventListener('keydown', function (event) {
+        var tag = document.activeElement && document.activeElement.tagName;
+        if (event.key === '/' && state.entity && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !document.querySelector('dialog[open]')) {
+          event.preventDefault();
+          $('search').focus();
+        }
+      });
+      Array.prototype.forEach.call(document.querySelectorAll('.theme-btn'), function (button) {
+        button.addEventListener('click', function () {
+          var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+          write('tbg-hub-theme', next);
+          setTheme(next);
+        });
+      });
+      $('switchBtn').addEventListener('click', function () { go(null); });
+      $('replayIntro').addEventListener('click', function () { playIntro(); });
+      window.addEventListener('hashchange', route);
+      window.addEventListener('resize', function () { network.refresh(); });
+
+      $('adminBtn').addEventListener('click', openPin);
+      $('pinCancel').addEventListener('click', function () { $('pinDialog').close(); });
+      $('pinForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var pin = $('pinInput').value;
+        $('pinSubmit').disabled = true;
+        $('pinError').textContent = '';
+        post({ action: 'verifyPin', pin: pin }).then(function (result) {
+          if (!result.ok) {
+            $('pinError').textContent = result.message;
+            $('pinInput').select();
+            return null;
+          }
+          state.pin = pin;
+          return fetchAdmin().then(function () {
+            $('pinDialog').close();
+            $('adminFilter').value = 'all';
+            clearForm();
+            renderAdmin();
+            $('sTitle').value = state.admin.title;
+            $('sNotice').value = state.admin.notice;
+            $('adminDialog').showModal();
+          });
+        }).catch(function (error) {
+          $('pinError').textContent = error.message;
+        }).finally(function () {
+          $('pinSubmit').disabled = false;
+        });
+      });
+      $('lockBtn').addEventListener('click', closeAdmin);
+      $('adminDialog').addEventListener('cancel', function (event) {
+        event.preventDefault();
+        closeAdmin();
+      });
+      $('adminFilter').addEventListener('change', renderAdmin);
+      $('newBtn').addEventListener('click', function () {
+        clearForm();
+        renderAdmin();
+        $('fTitle').focus();
+      });
+      $('linkForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var entities = entityChoice();
+        if (!entities.length) {
+          $('linkError').textContent = 'Choose which entity this application belongs to.';
+          return;
+        }
+        var link = {
+          id: $('fId').value,
+          title: $('fTitle').value,
+          category: $('fCategory').value,
+          description: $('fDescription').value,
+          url: $('fUrl').value,
+          icon: $('fIcon').value,
+          status: $('fStatus').value,
+          pinned: $('fPinned').checked,
+          entities: entities
+        };
+        $('saveBtn').disabled = true;
+        $('linkError').textContent = '';
+        post({ action: 'saveLink', pin: state.pin, link: link }).then(refreshAll).then(function () {
+          clearForm();
+          renderAdmin();
+          toast(link.title + ' saved.');
+        }).catch(function (error) {
+          $('linkError').textContent = error.message;
+        }).finally(function () {
+          $('saveBtn').disabled = false;
+        });
+      });
+      $('settingsForm').addEventListener('submit', function (event) {
+        event.preventDefault();
+        $('settingsSave').disabled = true;
+        $('settingsError').textContent = '';
+        post({
+          action: 'saveSettings',
+          pin: state.pin,
+          settings: { title: $('sTitle').value, notice: $('sNotice').value }
+        }).then(refreshAll).then(function () {
+          toast('Settings saved.');
+        }).catch(function (error) {
+          $('settingsError').textContent = error.message;
+        }).finally(function () {
+          $('settingsSave').disabled = false;
+        });
+      });
+
+      /* ---------- Start ---------- */
+      var prefersDark = !window.matchMedia || !window.matchMedia('(prefers-color-scheme: light)').matches;
+      setTheme(read('tbg-hub-theme') || (prefersDark ? 'dark' : 'light'));
+      tick();
+      setInterval(tick, 1000);
+
+      var saved = read('tbg-hub-data-v3');
+      if (saved) {
+        try { apply(JSON.parse(saved)); } catch (error) { /* Fresh data loads next */ }
+      }
+
+      // Open the entity in the link, else the last one used, else the selection screen
+      var startKey = keyFromHash();
+      var remembered = read('tbg-hub-entity');
+      if (!startKey && ENTITIES[remembered] && location.hash !== '#select') {
+        history.replaceState(null, '', '#' + ENTITIES[remembered].hash);
+        startKey = remembered;
+      }
+      route();
+      if (!startKey && !reduceMotion && !readSession('tbg-hub-intro')) playIntro();
+
+      load(false);
+      setInterval(function () {
+        if (!document.hidden) load(true);
+      }, 5 * 60 * 1000);
+    })();
+  </script>
+</body>
+</html>
